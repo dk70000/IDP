@@ -14,5 +14,3 @@ routes = {"S1":"RR",
           "2C":"NRLL",
           "2D":"NNRNR"}
 
-def printroutes():
-    print(routes)
