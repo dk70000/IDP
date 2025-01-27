@@ -24,21 +24,7 @@ class Motor:
     def Reverse(self,speed):
         self.m1Dir.value(1)
         self.pwm1.duty_u16(int(65535*speed/100))
-    
+
+#motor 3 is left, motor 4 is right
 motor3=Motor(3)
 motor4=Motor(4)
-
-count = 0
-
-while count<5:
-    motor3.Forward(100)
-    motor4.Forward(100)
-    sleep(1)
-    motor3.Reverse(30)
-    motor4.Reverse(30)
-    sleep(1)
-    motor3.off()
-    motor4.off()
-    sleep(1)
-    count+=1
-
