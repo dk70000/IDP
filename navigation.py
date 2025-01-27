@@ -58,7 +58,7 @@ def cornering(direction, speed):
     motor3.off()
     motor4.off()
 
-    if direction == "left":
+    if direction == "L":
         #turn blindly a little to get sensors off line
         motor3.Reverse(speed)
         motor4.Forward(speed)
@@ -68,7 +68,7 @@ def cornering(direction, speed):
         while getIRsensorvalue(3) == 0:
             pass
 
-    if direction == "right":
+    if direction == "R":
         #turn blindly a little to get sensors off line
         motor3.Forward(speed)
         motor4.Reverse(speed)
@@ -80,10 +80,6 @@ def cornering(direction, speed):
 
     motor3.off()
     motor4.off()
-
-    
-
-        
 
 
 def panic():
