@@ -48,5 +48,5 @@ def read_QR():
 #this function is the function that gathers everything together to export the required route
 def getroutefromblock():
     code = read_QR()
-    route = "S1"
-    return route
+    destination = str(code[0])
+    return destination

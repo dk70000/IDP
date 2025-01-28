@@ -42,6 +42,6 @@ class ActuatorMotor:
         self.pwm1.duty_u16(int(65535*speed/100))
 
 #motor 3 is left, motor 4 is right
+motor2=ActuatorMotor()
 motor3=Motor(3)
 motor4=Motor(4)
-motor2=ActuatorMotor()
