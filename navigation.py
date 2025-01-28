@@ -15,8 +15,17 @@ routes = {"S1":"RR",
           "2A":"RL",
           "2B":"NRNR",
           "2C":"NRLL",
-          "2D":"NNRNR"}
-
+          "2D":"NNRNR",
+          "A1":"LNR",
+          "B1":"RRN",
+          "C1":"RLNRN",
+          "D1":"RRNN",
+          "A2":"RL",
+          "B2":"LNLN",
+          "C2":"RRLN",
+          "D2":"LNLNN",
+          "1S":"LL",
+          "2S":"RNR"}
 
 def linefollowerbasic(speed,sensorvalues):
     """first attempt at a line follower algorithm"""
