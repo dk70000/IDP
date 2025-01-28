@@ -16,19 +16,14 @@ def read_QR():
     TINY_CODE_READER_DELAY = 0.05
     TINY_CODE_READER_LENGTH_OFFSET = 0
     TINY_CODE_READER_LENGTH_FORMAT = "H"
-    TINY_CODE_READER_MESSAGE_OFFSET = TINY_CODE_READER_LENGTH_OFFSET +
-    struct.calcsize(TINY_CODE_READER_LENGTH_FORMAT)
+    TINY_CODE_READER_MESSAGE_OFFSET = TINY_CODE_READER_LENGTH_OFFSET + struct.calcsize(TINY_CODE_READER_LENGTH_FORMAT)
     TINY_CODE_READER_MESSAGE_SIZE = 254
     TINY_CODE_READER_MESSAGE_FORMAT = "B" * TINY_CODE_READER_MESSAGE_SIZE
-    TINY_CODE_READER_I2C_FORMAT = TINY_CODE_READER_LENGTH_FORMAT +
-    TINY_CODE_READER_MESSAGE_FORMAT
+    TINY_CODE_READER_I2C_FORMAT = TINY_CODE_READER_LENGTH_FORMAT + TINY_CODE_READER_MESSAGE_FORMAT
     TINY_CODE_READER_I2C_BYTE_COUNT = struct.calcsize(TINY_CODE_READER_I2C_FORMAT)
     # Set up for the Pico, pin numbers will vary according to your setup.
-    i2c = machine.I2C(1,
-    27
-    scl=machine.Pin(19), # yellow
-    sda=machine.Pin(18), # blue
-    freq=400000)
+    #                           Yellow              Blue
+    i2c = machine.I2C(1, 27, scl=machine.Pin(19), sda=machine.Pin(18), freq=400000)
     print(i2c.scan())
     # Keep looping and reading the sensor results until we get a QR code
     while True:
@@ -52,6 +47,6 @@ def read_QR():
 
 #this function is the function that gathers everything together to export the required route
 def getroutefromblock():
-    code = read_QR();
+    code = read_QR()
     route = "S1"
     return route
