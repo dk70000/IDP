@@ -2,6 +2,7 @@
 from motors import Motor, motor3, motor4
 from utime import sleep
 from sensors import getIRsensorvalue
+from camera import getroutefromblock
 
 #refer to start as S, depots and 1 and 2, destinations as A-D. S1 would then be the route S to 1. L is left, R is right, N is null.
 #this contains the routes to take to and from each position
@@ -86,3 +87,13 @@ def panic():
     """function to try and find track if lost"""
     return
 
+def blockpickup():
+    """this function approaches and picks up the block"""
+    newroute = getroutefromblock()
+    return newroute
+
+def blockdrop():
+    """this function drops off the block"""
+
+def startspin():
+    """this function spins 180 in the start zone"""
