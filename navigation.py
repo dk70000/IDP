@@ -109,22 +109,18 @@ def panic():
 
     while linefound == 0:
         
-        for loop in range(0,loops):
+        for loop in range(0,turns*loops):
             motor3.Forward(20)
             motor4.Reverse(20)
             if getIRsensorvalue(3) == 1:
                 motor3.off()
                 motor4.off()
                 linefound = 1
+                break
+        
+        turns += 1
 
-        if linefound == 1:
-            pass
-
-
-
-
-    return
-
+        
 def blockpickup(blockNo):
     """this function approaches and picks up the block"""
     #adjustable parameters

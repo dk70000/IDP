@@ -12,7 +12,6 @@ while True:
 
     #don't do anything until the button is pressed
     while getbutton() == 0:
-        setLED(0)
         pass
     
     changeLED()
