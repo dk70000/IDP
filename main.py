@@ -4,6 +4,9 @@ from sensors import getIRsensorvalue,getbutton, setLED, changeLED
 from camera import getroutefromblock
 from utime import sleep
 
+CORNERING_SPEED = 50
+LINE_SPEED = 100
+
 #overall loop to always run while on
 while True:
 
@@ -33,29 +36,31 @@ while True:
         if currentcorner == len(routes[currentroute]):
             #this checks if the route ends at a depot
             if currentroute[-1] in "12":
-                currentroute = currentroute[1] + getroutefromblock()
+                currentroute = currentroute[-1] + getroutefromblock()
                 blockpickup(currentblock)
             #this checks if the route ends at a destination
             elif currentroute[-1] in "ABCD":
                 blockdrop()
                 currentblock += 1
                 if currentblock < 4:
-                    currentroute = currentroute[1] + "1"
+                    currentroute = currentroute[-1] + "1"
                 elif currentblock < 8:
-                    currentroute = currentroute[1] + "2"
+                    currentroute = currentroute[-1] + "2"
                 else:
-                    currentroute = currentroute[1] + "S"
+                    currentroute = currentroute[-1] + "S"
             #if the route ended at the start, just a 180 spin is needed
             else:
                 startspin()
 
         #this checks if a corner has been reached and turns it
         elif IRvalues[0] or IRvalues[3]:
-            cornering(currentroute[currentcorner],50)
+            cornering(routes[currentroute][currentcorner], CORNERING_SPEED)
             currentcorner += 1
         
         #this then follows the line if nothing else is happening
         else:
-            linefollowerbasic(100,IRvalues)
-
+            linefollowerbasic(LINE_SPEED,IRvalues)
+    
+    for i in range(0,10):
         changeLED()
+        sleep(0.2)

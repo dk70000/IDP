@@ -30,20 +30,20 @@ def linefollowerbasic(speed,sensorvalues):
     """first attempt at a line follower algorithm"""
     #adjustable parameters
     speedratio = 0.8
-    sleeptime = 1
+    sleeptime = 0
 
     #sensor numbering from left to right
     sensor2 = sensorvalues[1]
     sensor3 = sensorvalues[2]
 
     #line following with two sensors just inside line
-    if sensor2 and sensor3:
+    if sensor2 == 1 and sensor3 == 1:
         motor3.Forward(speed)
         motor4.Forward(speed)
-    elif sensor2 and sensor3 == 0:
+    elif sensor2 == 1 and sensor3 == 0:
         motor3.Forward(speed*speedratio)
         motor4.Forward(speed)
-    elif sensor2 == 0 and sensor3:
+    elif sensor2 == 0 and sensor3 == 1:
         motor3.Forward(speed)
         motor4.Forward(speed*speedratio)
     else:
@@ -196,8 +196,8 @@ def startspin():
     time = 2
 
     #spinny time
-    motor3.Forward(50)
-    motor4.Reverse(50)
+    motor3.Forward(speed)
+    motor4.Reverse(speed)
     sleep(time)
     motor3.off()
     motor4.off()
