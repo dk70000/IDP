@@ -1,7 +1,9 @@
 #this file contains all the navigation functions
 from motors import motor2, motor3, motor4
 from utime import sleep
-from sensors import getIRsensorvalue, getcrashsensor
+from sensors import Line2, Line3, getcrashsensor
+
+
 
 #refer to start as S, depots and 1 and 2, destinations as A-D. S1 would then be the route S to 1. L is left, R is right, N is null.
 #this contains the routes to take to and from each position
@@ -26,24 +28,20 @@ routes = {"S1":"RR",
           "1S":"LL",
           "2S":"RNR"}
 
-def linefollowerbasic(speed,sensorvalues):
+def linefollowerbasic(speed):
     """first attempt at a line follower algorithm"""
     #adjustable parameters
     speedratio = 0.8
     sleeptime = 0
 
-    #sensor numbering from left to right
-    sensor2 = sensorvalues[1]
-    sensor3 = sensorvalues[2]
-
     #line following with two sensors just inside line
-    if sensor2 == 1 and sensor3 == 1:
+    if Line2.value() == 1 and Line3.value() == 1:
         motor3.Forward(speed)
         motor4.Forward(speed)
-    elif sensor2 == 1 and sensor3 == 0:
+    elif Line2.value() == 1 and Line3.value() == 0:
         motor3.Forward(speed*speedratio)
         motor4.Forward(speed)
-    elif sensor2 == 0 and sensor3 == 1:
+    elif Line2.value() == 0 and Line3.value() == 1:
         motor3.Forward(speed)
         motor4.Forward(speed*speedratio)
     else:
@@ -74,7 +72,7 @@ def cornering(direction, speed):
         sleep(initialturntime)
 
         #now wait until sensor hits line again
-        while getIRsensorvalue(3) == 0:
+        while Line3.value == 0:
             pass
 
     if direction == "R":
@@ -84,7 +82,7 @@ def cornering(direction, speed):
         sleep(initialturntime)
 
         #now wait until sensor hits line again
-        while getIRsensorvalue(2) == 0:
+        while Line2.value() == 0:
             pass
 
     motor3.off()
@@ -112,7 +110,7 @@ def panic():
         for loop in range(0,turns*loops):
             motor3.Forward(20)
             motor4.Reverse(20)
-            if getIRsensorvalue(3) == 1:
+            if Line3.value == 1:
                 motor3.off()
                 motor4.off()
                 linefound = 1
@@ -120,7 +118,7 @@ def panic():
         
         turns += 1
 
-        
+
 def blockpickup(blockNo):
     """this function approaches and picks up the block"""
     #adjustable parameters

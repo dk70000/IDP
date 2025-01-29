@@ -1,6 +1,6 @@
 #this is the main file to be run by picobot
 from navigation import cornering, linefollowerbasic, routes, blockpickup, blockdrop, startspin
-from sensors import getIRsensorvalue,getbutton, setLED, changeLED
+from sensors import Line1, Line4, setLED, changeLED, button
 from camera import getroutefromblock
 from utime import sleep
 
@@ -11,7 +11,7 @@ LINE_SPEED = 100
 while True:
 
     #don't do anything until the button is pressed
-    while getbutton() == 0:
+    while button.value() == 0:
         pass
     
     changeLED()
@@ -26,10 +26,9 @@ while True:
 
 
     #loop with actual function in it
-    while getbutton() == 0:
+    while button.value() == 0:
         changeLED()
         #this is the main loop that will run throughout
-        IRvalues = [getIRsensorvalue(1), getIRsensorvalue(2), getIRsensorvalue(3), getIRsensorvalue(4)]
 
         #this statement checks if the end of a route has been reached
         if currentcorner == len(routes[currentroute]):
@@ -52,13 +51,13 @@ while True:
                 startspin()
 
         #this checks if a corner has been reached and turns it
-        elif IRvalues[0] or IRvalues[3]:
+        elif Line1.value() or Line4.value:
             cornering(routes[currentroute][currentcorner], CORNERING_SPEED)
             currentcorner += 1
         
         #this then follows the line if nothing else is happening
         else:
-            linefollowerbasic(LINE_SPEED,IRvalues)
+            linefollowerbasic(LINE_SPEED)
     
     for i in range(0,10):
         changeLED()
