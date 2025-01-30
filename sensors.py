@@ -1,5 +1,5 @@
 #this file is to contain all the sensor functions
-from machine import Pin
+from machine import Pin, I2C
 
 #defining line sensors, numbering from left to right
 Line1 = Pin(21, Pin.IN)
