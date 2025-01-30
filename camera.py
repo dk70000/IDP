@@ -11,7 +11,7 @@ from machine import Pin, I2C
 # Yellow---scl
 # The code reader has the I2C ID of hex 0c, or decimal 12.
 
-def read_QR():
+def readQR():
     TINY_CODE_READER_I2C_ADDRESS = 0x0C
     # How long to pause between sensor polls.
     TINY_CODE_READER_DELAY = 0.05
@@ -46,6 +46,6 @@ def read_QR():
 
 #this function is the function that gathers everything together to export the required route
 def getroutefromblock():
-    code = read_QR()
+    code = readQR()
     destination = str(code[0])
     return destination

@@ -1,11 +1,12 @@
 #this is the main file to be run by picobot
-from navigation import cornering, linefollowerbasic, routes, blockpickup, blockdrop, startspin
-from sensors import Line1, Line4, button
+from navigation import driveforward, cornering, linefollowerbasic, routes, blockpickup, blockdrop, startspin, panic
+from sensors import Line1, Line2, Line3, Line4, button
 from camera import getroutefromblock
 from utime import sleep
 
 CORNERING_SPEED = 50
-LINE_SPEED = 100
+LINE_SPEED = 100        # How fast to drive
+FIRST_MOVE_TIME = 2     # How long in seconds to move forward before finding the line
 
 #overall loop to always run while on
 while True:
@@ -20,6 +21,10 @@ while True:
     currentcorner = 0
     currentroute = "S1"
 
+    # Move out of start box and find line
+    driveforward(LINE_SPEED, FIRST_MOVE_TIME)
+    if not(Line2.value() or Line3.value()):
+        panic()    # Neither sensonrs can see the line so search in both dirrections
 
     #loop with actual function in it
     while button.value() == 0:

@@ -28,6 +28,37 @@ routes = {"S1":"RR",
           "1S":"LL",
           "2S":"RNR"}
 
+def driveforward(speed, time):
+    motor3.Forward(speed)
+    motor4.Forward(speed)
+    sleep(time)
+    motor3.off()
+    motor4.off()
+
+def drivebackwards(speed, time):
+    motor3.Reverse(speed)
+    motor4.Reverse(speed)
+    sleep(time)
+    motor3.off()
+    motor4.off()
+
+# Haven't used these functions yet cause most of the time you need to watch for a line
+'''
+def spinleft(speed, time):
+    motor3.Reverse(speed)
+    motor4.Forward(speed)
+    sleep(time)
+    motor3.off()
+    motor4.off()
+
+def spinright(speed, time):
+    motor3.Forward(speed)
+    motor4.Reverse(speed)
+    sleep(time)
+    motor3.off()
+    motor4.off()
+'''
+
 def linefollowerbasic(speed):
     """first attempt at a line follower algorithm"""
     #adjustable parameters
@@ -45,8 +76,9 @@ def linefollowerbasic(speed):
         motor3.Forward(speed)
         motor4.Forward(speed*speedratio)
     else:
-        motor3.off()
-        motor3.off()
+        # Reverse to reduce chance of finding wrong line
+        drivebackwards(50, 1)
+        # Then call panic to find the line again
         panic()
 
     #allow a little time to move before next loop
@@ -59,11 +91,7 @@ def cornering(direction, speed):
     initialturntime = 0.5
 
     #move forward a little before turning
-    motor3.Forward(speed)
-    motor4.Forward(speed)
-    sleep(moveforwardtime)
-    motor3.off()
-    motor4.off()
+    driveforward(speed, moveforwardtime)
 
     if direction == "L":
         #turn blindly a little to get sensors off line
@@ -90,16 +118,9 @@ def cornering(direction, speed):
 
 
 def panic():
-    """function to try and find track if lost"""
+    """function to try and find the line by rotating in both directions"""
     #adjustable parameters
     loops = 50
-
-    #reverse to reduce change of finding wrong line
-    motor3.Reverse(50)
-    motor4.Reverse(50)
-    sleep(1)
-    motor3.off()
-    motor4.off()
 
     #spin in each direction increasingly far
     linefound = 0
@@ -107,9 +128,20 @@ def panic():
 
     while linefound == 0:
         
-        for loop in range(0,turns*loops):
+        for loop in range(0, turns*loops):
             motor3.Forward(20)
             motor4.Reverse(20)
+            if Line3.value == 1:
+                motor3.off()
+                motor4.off()
+                linefound = 1
+                break
+        
+        turns += 1
+
+        for loop in range(0, turns*loops):
+            motor4.Forward(20)
+            motor3.Reverse(20)
             if Line3.value == 1:
                 motor3.off()
                 motor4.off()
