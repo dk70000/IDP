@@ -1,5 +1,6 @@
 #this file is to contain all the sensor functions
 from machine import Pin, I2C
+from rangefinder import VL53L0X
 
 #defining line sensors, numbering from left to right
 Line1 = Pin(21, Pin.IN)
@@ -18,9 +19,7 @@ crashsensor = Pin(12, Pin.IN)
 
 #IR distance sensor
 IRdistancesensor = I2C(0, sda=Pin(16), scl=Pin(17))
-
-
-
+IRdistancesensor = VL53L0X(IRdistancesensor)
 
 def start(self, period=0):
     self._config(
