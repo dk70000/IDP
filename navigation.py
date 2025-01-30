@@ -17,14 +17,14 @@ routes = {"S1":"RR",
           "2B":"NRNR",
           "2C":"NRLL",
           "2D":"NNRNR",
-          "A1":"LNR",
-          "B1":"RRN",
+          "A1":"RNR",       # When leaving the depot, turn in the opposite dirrection
+          "B1":"LRN",       # for the first instruction since we have to reverse out
           "C1":"RLNRN",
-          "D1":"RRNN",
-          "A2":"RL",
-          "B2":"LNLN",
-          "C2":"RRLN",
-          "D2":"LNLNN",
+          "D1":"LRNN",
+          "A2":"LL",
+          "B2":"RNLN",
+          "C2":"LRLN",
+          "D2":"RNLNN",
           "1S":"LL",
           "2S":"RNR"}
 
