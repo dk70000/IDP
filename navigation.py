@@ -195,8 +195,6 @@ def blockdrop():
     #reverse out of zone to give turning clearance
     drivebackwards(20, forwardtime)
 
-    cornering("L", 50)      # TODO Change this to actually go in the right dirretion
-
 
 def startspin():
     """this function spins 180 in the start zone"""

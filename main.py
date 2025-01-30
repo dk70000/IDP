@@ -46,6 +46,9 @@ while True:
                     currentroute = currentroute[-1] + "2"
                 else:
                     currentroute = currentroute[-1] + "S"
+                currentcorner = 0
+                cornering(routes[currentroute][currentcorner], CORNERING_SPEED)
+                currentcorner += 1       # Reset current corner count to start new route after first corner has been turned inside blockdrop function
             #if the route ended at the start, just a 180 spin is needed
             else:
                 startspin()
