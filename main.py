@@ -1,6 +1,6 @@
 #this is the main file to be run by picobot
 from navigation import cornering, linefollowerbasic, routes, blockpickup, blockdrop, startspin
-from sensors import Line1, Line4, setLED, changeLED, button
+from sensors import Line1, Line4, button
 from camera import getroutefromblock
 from utime import sleep
 
@@ -13,21 +13,16 @@ while True:
     #don't do anything until the button is pressed
     while button.value() == 0:
         pass
-    
-    changeLED()
+    sleep(1)
+
     #initialising variables
     currentblock = 0
     currentcorner = 0
     currentroute = "S1"
-    #wait to allow LED to flash before starting
-    sleep(0.5)
-    changeLED()
-    sleep(0.5)
 
 
     #loop with actual function in it
     while button.value() == 0:
-        changeLED()
         #this is the main loop that will run throughout
 
         #this statement checks if the end of a route has been reached
@@ -58,7 +53,3 @@ while True:
         #this then follows the line if nothing else is happening
         else:
             linefollowerbasic(LINE_SPEED)
-    
-    for i in range(0,10):
-        changeLED()
-        sleep(0.2)

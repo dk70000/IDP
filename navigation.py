@@ -1,7 +1,7 @@
 #this file contains all the navigation functions
 from motors import motor2, motor3, motor4
 from utime import sleep
-from sensors import Line2, Line3, getcrashsensor
+from sensors import Line2, Line3, crashsensor
 
 
 
@@ -128,10 +128,9 @@ def blockpickup(blockNo):
     motor3.Forward(20)
     motor4.Forward(20)
 
-    while getcrashsensor() == 0:
+    while crashsensor.value() == 0:
         pass
     
-
     motor3.off()
     motor4.off()
 
