@@ -185,11 +185,7 @@ def blockdrop():
     forwardtime = 1
 
     #move forward into zone
-    motor3.Forward(20)
-    motor4.Forward(20)
-    sleep(forwardtime)
-    motor3.off()
-    motor4.off()
+    driveforward(20, forwardtime)
 
     #put down block
     motor2.Reverse(50)
@@ -197,21 +193,9 @@ def blockdrop():
     motor2.off()
 
     #reverse out of zone to give turning clearance
-    motor3.Reverse(20)
-    motor4.Reverse(20)
-    sleep(forwardtime)
-    motor3.off()
-    motor4.off()
+    drivebackwards(20, forwardtime)
 
-    #spin 180
-    startspin()
-
-    #reverse back into zone to be before corner detection
-    motor3.Reverse(20)
-    motor4.Reverse(20)
-    sleep(forwardtime)
-    motor3.off()
-    motor4.off()
+    cornering("L", 50)      # TODO Change this to actually go in the right dirretion
 
 
 def startspin():
