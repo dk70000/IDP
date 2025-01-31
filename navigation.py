@@ -1,7 +1,7 @@
 #this file contains all the navigation functions
 from motors import motor2, motor3, motor4
 from utime import sleep
-from sensors import Line2, Line3, crashsensor
+from sensors import Line1, Line2, Line3, Line4 crashsensor
 
 
 
@@ -65,17 +65,19 @@ def linefollowerbasic(speed):
     speedratio = 0.8
     sleeptime = 0
 
+    Line = [Line2.value(), Line3.value()]
+
     #line following with two sensors just inside line
-    if Line2.value() == 1 and Line3.value() == 1:
+    if Line == [1, 1]:
         motor3.Forward(speed)
         motor4.Forward(speed)
-    elif Line2.value() == 1 and Line3.value() == 0:
+    elif Line == [1, 0]:
         motor3.Forward(speed*speedratio)
         motor4.Forward(speed)
-    elif Line2.value() == 0 and Line3.value() == 1:
+    elif Line == [0, 1]:
         motor3.Forward(speed)
         motor4.Forward(speed*speedratio)
-    else:
+    elif Line == [0, 0]:
         # Reverse to reduce chance of finding wrong line
         drivebackwards(50, 1)
         # Then call panic to find the line again
@@ -100,7 +102,7 @@ def cornering(direction, speed):
         sleep(initialturntime)
 
         #now wait until sensor hits line again
-        while Line3.value == 0:
+        while Line3.value() == 0:
             pass
 
     if direction == "R":
