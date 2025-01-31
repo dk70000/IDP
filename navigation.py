@@ -1,7 +1,7 @@
 #this file contains all the navigation functions
 from motors import motor2, motor3, motor4
 from utime import sleep
-from sensors import Line1, Line2, Line3, Line4 crashsensor
+from sensors import Line1, Line2, Line3, Line4, crashsensor
 
 
 
