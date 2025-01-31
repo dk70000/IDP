@@ -131,9 +131,9 @@ def panic():
     while linefound == 0:
         
         for loop in range(0, turns*loops):
-            motor3.Forward(20)
-            motor4.Reverse(20)
-            if Line3.value == 1:
+            motor3.Forward(30)
+            motor4.Reverse(30)
+            if Line3.value() == 1:
                 motor3.off()
                 motor4.off()
                 linefound = 1
@@ -142,9 +142,9 @@ def panic():
         turns += 1
 
         for loop in range(0, turns*loops):
-            motor4.Forward(20)
-            motor3.Reverse(20)
-            if Line3.value == 1:
+            motor4.Forward(30)
+            motor3.Reverse(30)
+            if Line2.value() == 1:
                 motor3.off()
                 motor4.off()
                 linefound = 1

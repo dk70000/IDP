@@ -48,4 +48,4 @@ def readQR():
 def getroutefromblock():
     code = readQR()
     destination = str(code[0])
-    return destination
+    return destination§
