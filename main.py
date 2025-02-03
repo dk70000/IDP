@@ -1,7 +1,6 @@
 #this is the main file to be run by picobot
 from navigation import driveforward, cornering, linefollowerbasic, routes, blockpickup, blockdrop, startspin, panic
 from sensors import Line1, Line2, Line3, Line4, button
-from camera import getroutefromblock
 from utime import sleep
 
 CORNERING_SPEED = 50
@@ -34,8 +33,8 @@ while True:
         if currentcorner == len(routes[currentroute]):
             #this checks if the route ends at a depot
             if currentroute[-1] in "12":
-                currentroute = currentroute[-1] + getroutefromblock()
-                blockpickup(currentblock)
+                newdestination = blockpickup()
+                currentroute = currentroute[-1] + newdestination
             #this checks if the route ends at a destination
             elif currentroute[-1] in "ABCD":
                 blockdrop()

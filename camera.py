@@ -11,7 +11,7 @@ from machine import Pin, I2C
 # Yellow---scl
 # The code reader has the I2C ID of hex 0c, or decimal 12.
 
-def readQR():
+def readQR(readattempts):
     TINY_CODE_READER_I2C_ADDRESS = 0x0C
     # How long to pause between sensor polls.
     TINY_CODE_READER_DELAY = 0.05
@@ -27,7 +27,7 @@ def readQR():
     i2c = I2C(1, scl=Pin(19), sda=Pin(18), freq=400000)
     print(i2c.scan())
     # Keep looping and reading the sensor results until we get a QR code
-    while True:
+    for i in range(readattempts):
         sleep(TINY_CODE_READER_DELAY)
         read_data = i2c.readfrom(TINY_CODE_READER_I2C_ADDRESS, TINY_CODE_READER_I2C_BYTE_COUNT)
         #print('raw data',read_data)
@@ -38,14 +38,17 @@ def readQR():
             continue
         try:
             message_string = bytearray(message_bytes[0:message_length]).decode("utf-8")
-            print('barcode:', message_string)
+            #print('barcode:', message_string)
             return message_string
         except:
-            print("Couldn't decode as UTF 8")
-        pass
+            continue    # Couldn't decode QR code so try again
 
 #this function is the function that gathers everything together to export the required route
 def getroutefromblock():
-    code = readQR()
-    destination = str(code[0])
-    return destination§
+    READ_ATTEMPTS = 20
+    code = str(readQR(READ_ATTEMPTS))
+    if code == None:
+        return None
+    else:
+        destination = code[0]
+        return destination

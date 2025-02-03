@@ -1,9 +1,8 @@
 #this file contains all the navigation functions
 from motors import motor2, motor3, motor4
 from utime import sleep
-from sensors import Line1, Line2, Line3, Line4, crashsensor
-
-
+from sensors import Line2, Line3, IRdistancesensor
+from camera import getroutefromblock
 
 #refer to start as S, depots and 1 and 2, destinations as A-D. S1 would then be the route S to 1. L is left, R is right, N is null.
 #this contains the routes to take to and from each position
@@ -153,37 +152,72 @@ def panic():
         turns += 1
 
 
-def blockpickup(blockNo):
+def blockpickup():
     """this function approaches and picks up the block"""
     #adjustable parameters
-    extensiontime = 2
+    LINE_FOLLOW_LOOPS = 30
+    QR_CODE_ATTEMPTS = 3
+    QR_CODE_IDEAL_DISTANCE = 300
+    QR_CODE_MIN_DISTANCE = 150
+    MIN_RANGE = 20
+    TIME_PAST_20mm = 0.1
+    EXTENSION_TIME = 2
 
-    #move forward until block is hit
-    motor3.Forward(20)
-    motor4.Forward(20)
-
-    while crashsensor.value() == 0:
-        pass
+    # Do line following for a fixed amount of time to get straight
+    for i in range(LINE_FOLLOW_LOOPS):
+        linefollowerbasic(100)
+    
+    # Move to 30cm from the block
+    try:
+        if IRdistancesensor.ping() >= QR_CODE_IDEAL_DISTANCE:
+            while(IRdistancesensor.ping() > QR_CODE_IDEAL_DISTANCE):
+                linefollowerbasic(50)
+        elif IRdistancesensor.ping() < QR_CODE_MIN_DISTANCE:
+            while(IRdistancesensor.ping() < QR_CODE_MIN_DISTANCE):
+                motor3.Reverse(30)
+                motor4.Reverse(30)
+            QR_CODE_ATTEMPTS = 1    # Don't try and move forward after failed QR code read since it's already too close to the block
+    except:
+        return "A"  # IR distance sensor doesn't work
     
     motor3.off()
     motor4.off()
 
-    #pick up block
+    # Try QR code reader a few times, getting closer each time
+    for i in range(QR_CODE_ATTEMPTS):
+        newdestination = getroutefromblock()
+        if newdestination != None:
+            pass
+        else:
+            for i in range(LINE_FOLLOW_LOOPS):  # Move forward to try read again
+                linefollowerbasic(100)
+    
+    if newdestination == None:
+        return "A"
+    
+    # Move up to the 20mm from the block and a little bit further
+    while(IRdistancesensor.ping() > MIN_RANGE):
+        linefollowerbasic(50)
+    sleep(TIME_PAST_20mm)
+
+    motor3.off()
+    motor4.off()
+
+    # Lift fork lift
     motor2.Forward(50)
-    sleep(extensiontime)
+    sleep(EXTENSION_TIME)
     motor2.off()
 
-    #spin around
-    if blockNo < 4:
-        cornering("R",50)
-    else:
-        cornering("L",50)
+    #  Spin around (doens't matter direction)
+    cornering("L",50)
+    
+    return newdestination   # Return the value read from the QR code reader (X if no code found)
 
 
 def blockdrop():
     """this function drops off the block"""
     #adjustable parameters
-    extensiontime = 2
+    EXTENSION_TIME = 2
     forwardtime = 1
 
     #move forward into zone
@@ -191,7 +225,7 @@ def blockdrop():
 
     #put down block
     motor2.Reverse(50)
-    sleep(extensiontime)
+    sleep(EXTENSION_TIME)
     motor2.off()
 
     #reverse out of zone to give turning clearance
