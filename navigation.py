@@ -88,8 +88,8 @@ def linefollowerbasic(speed):
 def cornering(direction, speed):
     """cornering function"""
     #adjustable parameters
-    moveforwardtime = 0.5
-    initialturntime = 0.5
+    moveforwardtime = 0.1
+    initialturntime = 0.2
 
     #move forward a little before turning
     driveforward(speed, moveforwardtime)
@@ -152,7 +152,7 @@ def panic():
         turns += 1
 
 
-def blockpickup():
+def blockpickup(depot):
     """this function approaches and picks up the block"""
     #adjustable parameters
     LINE_FOLLOW_LOOPS = 30
@@ -160,7 +160,7 @@ def blockpickup():
     QR_CODE_IDEAL_DISTANCE = 300
     QR_CODE_MIN_DISTANCE = 150
     MIN_RANGE = 20
-    TIME_PAST_20mm = 0.1
+    TIME_PAST_RANGE = 0.1
     EXTENSION_TIME = 2
 
     # Do line following for a fixed amount of time to get straight
@@ -198,7 +198,7 @@ def blockpickup():
     # Move up to the 20mm from the block and a little bit further
     while(IRdistancesensor.ping() > MIN_RANGE):
         linefollowerbasic(50)
-    sleep(TIME_PAST_20mm)
+    sleep(TIME_PAST_RANGE)
 
     motor3.off()
     motor4.off()
@@ -208,10 +208,13 @@ def blockpickup():
     sleep(EXTENSION_TIME)
     motor2.off()
 
-    #  Spin around (doens't matter direction)
-    cornering("L",50)
+    #  Spin 180 (right for depot 1, left for depot 2 to avoid hitting wall)
+    if depot == 1:
+        cornering("R",50)
+    else:
+        cornering("L", 50)
     
-    return newdestination   # Return the value read from the QR code reader (X if no code found)
+    return newdestination   # Return the value read from the QR code reader (default to A if no code found)
 
 
 def blockdrop():
