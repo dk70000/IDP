@@ -1,11 +1,13 @@
 #this is the main file to be run by picobot
 from navigation import driveforward, cornering, linefollowerbasic, routes, blockpickup, blockdrop, startspin, panic
 from sensors import Line1, Line2, Line3, Line4, button
-from utime import sleep
+from utime import sleep, ticks_ms, ticks_diff
 
 CORNERING_SPEED = 50
 LINE_SPEED = 100        # How fast to drive
 FIRST_MOVE_TIME = 2     # How long in seconds to move forward before finding the line
+
+timer = ticks_ms()
 
 #overall loop to always run while on
 while True:
@@ -39,7 +41,9 @@ while True:
             elif currentroute[-1] in "ABCD":
                 blockdrop()
                 currentblock += 1
-                if currentblock < 4:
+                if ticks_diff(ticks_ms, timer) > 300000:
+                    currentroute = currentroute[-1] + "S"
+                elif currentblock < 4:
                     currentroute = currentroute[-1] + "1"
                 elif currentblock < 8:
                     currentroute = currentroute[-1] + "2"
