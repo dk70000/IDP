@@ -1,8 +1,6 @@
 from micropython import const
 import ustruct
 import utime
-# from machine import Timer
-# import time
 
 _IO_TIMEOUT = 1000
 _SYSRANGE_START = const(0x00)

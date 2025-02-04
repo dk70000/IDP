@@ -1,4 +1,4 @@
-#this is the main file to be run by picobot
+# This is the main file to be run by picobot
 from navigation import driveforward, cornering, linefollowerbasic, routes, blockpickup, blockdrop, startspin, panic
 from sensors import Line1, Line2, Line3, Line4, button
 from utime import sleep_ms, ticks_ms, ticks_diff
@@ -9,36 +9,31 @@ FIRST_MOVE_TIME = 2000     # How long in seconds to move forward before finding 
 
 timer = ticks_ms()
 
-#overall loop to always run while on
-while True:
+while True:  # Overall loop to always run while on
 
-    #don't do anything until the button is pressed
-    while button.value() == 0:
+    while button.value() == 0:   # Don't do anything until the button is pressed
         pass
     sleep_ms(1000)
 
-    #initialising variables
+    # Initialising variables
     currentblock = 0
     currentcorner = 0
     currentroute = "S1"
 
-    # Move out of start box and find line
-    driveforward(LINE_SPEED, FIRST_MOVE_TIME)
+    driveforward(LINE_SPEED, FIRST_MOVE_TIME)   # Move out of start box and find line
     if not(Line2.value() or Line3.value()):
-        panic()    # Neither sensonrs can see the line so search in both dirrections
+        panic()    # Neither sensors can see the line so search in both dirrections
 
-    #loop with actual function in it
-    while button.value() == 0:
-        #this is the main loop that will run throughout
+    while button.value() == 0:  # Loop with actual function in it
 
-        #this statement checks if the end of a route has been reached
-        if currentcorner == len(routes[currentroute]):
-            #this checks if the route ends at a depot
-            if currentroute[-1] in "12":
+       
+        if currentcorner == len(routes[currentroute]):  # This statement checks if the end of a route has been reached
+            
+            if currentroute[-1] in "12":    # This checks if the route ends at a depot
                 newdestination = blockpickup(currentroute[-1])
                 currentroute = currentroute[-1] + newdestination
-            #this checks if the route ends at a destination
-            elif currentroute[-1] in "ABCD":
+            
+            elif currentroute[-1] in "ABCD":    # This checks if the route ends at a destination
                 blockdrop()
                 currentblock += 1
                 if ticks_diff(ticks_ms, timer) > 255000:
@@ -52,18 +47,17 @@ while True:
                 currentcorner = 0
                 cornering(routes[currentroute][currentcorner], CORNERING_SPEED)
                 currentcorner += 1       # Reset current corner count to start new route after first corner has been turned inside blockdrop function
-            #if the route ended at the start, just a 180 spin is needed
-            else:
+
+            else:     # If the route ended at the start, just a 180 spin is needed
                 driveforward(100,2000)
                 startspin()
                 break
 
-        #this checks if a corner has been reached and turns it
-        elif Line1.value() or Line4.value:
+        elif Line1.value() or Line4.value:      # This checks if a corner has been reached and turns it
             cornering(routes[currentroute][currentcorner], CORNERING_SPEED)
             currentcorner += 1
         
-        #this then follows the line if nothing else is happening
-        else:
+        else:   # This then follows the line if nothing else is happening
             linefollowerbasic(LINE_SPEED)
-    sleep_ms(1000)
+
+    sleep_ms(1000)  # Sleep after button pressed so that second press isn't triggered

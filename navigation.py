@@ -1,11 +1,14 @@
-#this file contains all the navigation functions
+# This file contains all the navigation functions
 from motors import motor2, motor3, motor4
 from utime import sleep_ms, ticks_ms, ticks_diff
 from sensors import Line2, Line3, IRdistancesensor, button
 from camera import getroutefromblock
 
-#refer to start as S, depots and 1 and 2, destinations as A-D. S1 would then be the route S to 1. L is left, R is right, N is null.
-#this contains the routes to take to and from each position
+# This contains the routes to take to and from each position
+# Refer to start as S, depots and 1 and 2, destinations as A-D. 
+# S1 would then be the route S to 1.
+# L is left, R is right, N is null.
+
 routes = {"S1":"RR",
           "S2":"LNL",
           "1A":"LNR",
@@ -28,6 +31,8 @@ routes = {"S1":"RR",
           "2S":"RNR"}
 
 def driveforward(speed, time):
+    """Simply drives fowards"""
+
     motor3.Forward(speed)
     motor4.Forward(speed)
     sleep_ms(time)
@@ -35,6 +40,7 @@ def driveforward(speed, time):
     motor4.off()
 
 def drivebackwards(speed, time):
+    """Simply drives backwards"""
     motor3.Reverse(speed)
     motor4.Reverse(speed)
     sleep_ms(time)
@@ -59,59 +65,56 @@ def spinright(speed, time):
 '''
 
 def linefollowerbasic(speed):
-    """first attempt at a line follower algorithm"""
-    #adjustable parameters
-    speedratio = 0.8
-    sleeptime = 0
+    """First attempt at a line follower algorithm"""
+
+    SPEED_RATIO = 0.8
+    SLEEP_TIME = 0
 
     Line = [Line2.value(), Line3.value()]
 
-    #line following with two sensors just inside line
+    # Line following with two sensors just inside line
     if Line == [1, 1]:
         motor3.Forward(speed)
         motor4.Forward(speed)
+
     elif Line == [1, 0]:
-        motor3.Forward(speed*speedratio)
+        motor3.Forward(speed*SPEED_RATIO)
         motor4.Forward(speed)
+
     elif Line == [0, 1]:
         motor3.Forward(speed)
-        motor4.Forward(speed*speedratio)
-    elif Line == [0, 0]:
-        # Reverse to reduce chance of finding wrong line
-        drivebackwards(50, 1)
-        # Then call panic to find the line again
-        panic()
+        motor4.Forward(speed*SPEED_RATIO)
 
-    #allow a little time to move before next loop
-    sleep_ms(sleeptime)
+    elif Line == [0, 0]:
+        drivebackwards(50, 1)   # Reverse to reduce chance of finding wrong line
+        panic() # Then call panic to find the line again
+
+    sleep_ms(SLEEP_TIME) # Allow a little time to move before next loop
 
 def cornering(direction, speed):
-    """cornering function"""
-    #adjustable parameters
-    moveforwardtime = 100
-    initialturntime = 200
+    """Cornering function"""
 
-    #move forward a little before turning
-    driveforward(speed, moveforwardtime)
+    MOVE_FORWARD_TIME = 100
+    INITIAL_TURN_TIME = 200
+
+    driveforward(speed, MOVE_FORWARD_TIME)  # Move forward a little before turning
 
     if direction == "L":
-        #turn blindly a little to get sensors off line
-        motor3.Reverse(speed)
-        motor4.Forward(speed)
-        sleep_ms(initialturntime)
 
-        #now wait until sensor hits line again
-        while (Line3.value() == 0) and (button.value() == 0):
+        motor3.Reverse(speed)   # Turn blindly a little to get sensors off line
+        motor4.Forward(speed)
+        sleep_ms(INITIAL_TURN_TIME)
+
+        while (Line3.value() == 0) and (button.value() == 0):   # Now wait until sensor hits line again
             pass
 
     if direction == "R":
-        #turn blindly a little to get sensors off line
-        motor3.Forward(speed)
-        motor4.Reverse(speed)
-        sleep_ms(initialturntime)
 
-        #now wait until sensor hits line again
-        while (Line2.value() == 0) and (button.value() == 0):
+        motor3.Forward(speed)   # Turn blindly a little to get sensors off line
+        motor4.Reverse(speed)
+        sleep_ms(INITIAL_TURN_TIME)
+
+        while (Line2.value() == 0) and (button.value() == 0):   # Now wait until sensor hits line again
             pass
 
     motor3.off()
@@ -119,21 +122,21 @@ def cornering(direction, speed):
 
 
 def panic():
-    """function to try and find the line by rotating in both directions"""
-    #adjustable parameters
-    time = 500
-    timer = ticks_ms()
+    """Function to try and find the line by rotating in both directions"""
 
-    #spin in each direction increasingly far
+    TURN_TIME = 500 # Time duration of initial oscillation
+
     linefound = 0
-    turns = 1
+    turns = 1   # Keeps track of how many turns, so that with each turn, it will go further
 
-    while (linefound == 0) and (button.value() == 0):
+    while (linefound == 0) and (button.value() == 0):   # Button included in each while loop, so that robot can still be stopped while in a loop
         
+        timer = ticks_ms()  # Reference timer for turn
+
         motor3.Forward(50)
         motor4.Reverse(50)
 
-        while (ticks_diff(ticks_ms(), timer) < time * turns) and (button.value() == 0):
+        while (ticks_diff(ticks_ms(), timer) < TURN_TIME * turns) and (button.value() == 0):
             if Line3.value() == 1:
                 motor3.off()
                 motor4.off()
@@ -144,11 +147,13 @@ def panic():
 
         if linefound == 1:
             break
+        
+        timer = ticks_ms()  # Reference timer for turn
 
         motor3.Reverse(50)
         motor4.Forward(50)
 
-        while (ticks_diff(ticks_ms(), timer) < time * turns) and (button.value() == 0):
+        while (ticks_diff(ticks_ms(), timer) < TURN_TIME * turns) and (button.value() == 0):
             if Line2.value() == 1:
                 motor3.off()
                 motor4.off()
@@ -159,8 +164,8 @@ def panic():
 
 
 def blockpickup(depot):
-    """this function approaches and picks up the block"""
-    #adjustable parameters
+    """This function approaches and picks up the block"""
+
     STRAIGHTEN_TIME = 700
     QR_CODE_IDEAL_DISTANCE = 300
     QR_CODE_MIN_DISTANCE = 150
@@ -227,34 +232,31 @@ def blockpickup(depot):
 
 
 def blockdrop():
-    """this function drops off the block"""
-    #adjustable parameters
-    EXTENSION_TIME = 2000
-    forwardtime = 2000
+    """This function drops off the block"""
 
-    #go forward for an amount of time following the line to make sure inside zone
+    EXTENSION_TIME = 2000
+    FORWARD_TIME = 2000
+
+    # Go forward for an amount of time following the line to make sure inside zone
     start = ticks_ms()
-    while (ticks_diff(ticks_ms(), start) < forwardtime) and (button.value() == 0):
+    while (ticks_diff(ticks_ms(), start) < FORWARD_TIME) and (button.value() == 0):
         linefollowerbasic(50)
 
-    #put down block
-    motor2.Reverse(50)
+    motor2.Reverse(50)  # Put down block
     sleep_ms(EXTENSION_TIME)
     motor2.off()
 
-    #reverse out of zone to give turning clearance
-    drivebackwards(50, forwardtime)
+    drivebackwards(50, FORWARD_TIME)    # Reverse out of zone to give turning clearance
 
 
 def startspin():
-    """this function spins 180 in the start zone"""
-    #adjustable parameters
-    speed = 50
-    time = 2000
+    """This function spins 180 in the start zone"""
+    SPEED = 50
+    TIME = 2000
 
     #spinny time
-    motor3.Forward(speed)
-    motor4.Reverse(speed)
-    sleep_ms(time)
+    motor3.Forward(SPEED)
+    motor4.Reverse(SPEED)
+    sleep_ms(TIME)
     motor3.off()
     motor4.off()
