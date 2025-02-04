@@ -1,6 +1,6 @@
 #this file contains all the navigation functions
 from motors import motor2, motor3, motor4
-from utime import sleep, ticks_ms, ticks_diff
+from utime import sleep_ms, ticks_ms, ticks_diff
 from sensors import Line2, Line3, IRdistancesensor
 from camera import getroutefromblock
 
@@ -30,14 +30,14 @@ routes = {"S1":"RR",
 def driveforward(speed, time):
     motor3.Forward(speed)
     motor4.Forward(speed)
-    sleep(time)
+    sleep_ms(time)
     motor3.off()
     motor4.off()
 
 def drivebackwards(speed, time):
     motor3.Reverse(speed)
     motor4.Reverse(speed)
-    sleep(time)
+    sleep_ms(time)
     motor3.off()
     motor4.off()
 
@@ -83,13 +83,13 @@ def linefollowerbasic(speed):
         panic()
 
     #allow a little time to move before next loop
-    sleep(sleeptime)
+    sleep_ms(sleeptime)
 
 def cornering(direction, speed):
     """cornering function"""
     #adjustable parameters
-    moveforwardtime = 0.1
-    initialturntime = 0.2
+    moveforwardtime = 100
+    initialturntime = 200
 
     #move forward a little before turning
     driveforward(speed, moveforwardtime)
@@ -98,7 +98,7 @@ def cornering(direction, speed):
         #turn blindly a little to get sensors off line
         motor3.Reverse(speed)
         motor4.Forward(speed)
-        sleep(initialturntime)
+        sleep_ms(initialturntime)
 
         #now wait until sensor hits line again
         while Line3.value() == 0:
@@ -108,7 +108,7 @@ def cornering(direction, speed):
         #turn blindly a little to get sensors off line
         motor3.Forward(speed)
         motor4.Reverse(speed)
-        sleep(initialturntime)
+        sleep_ms(initialturntime)
 
         #now wait until sensor hits line again
         while Line2.value() == 0:
@@ -160,8 +160,8 @@ def blockpickup(depot):
     QR_CODE_IDEAL_DISTANCE = 300
     QR_CODE_MIN_DISTANCE = 150
     MIN_RANGE = 20
-    TIME_PAST_RANGE = 0.1
-    EXTENSION_TIME = 2
+    TIME_PAST_RANGE = 100
+    EXTENSION_TIME = 2000
 
     # Do line following for a fixed amount of time to get straight
     for i in range(LINE_FOLLOW_LOOPS):
@@ -198,14 +198,14 @@ def blockpickup(depot):
     # Move up to the 20mm from the block and a little bit further
     while(IRdistancesensor.ping() > MIN_RANGE):
         linefollowerbasic(50)
-    sleep(TIME_PAST_RANGE)
+    sleep_ms(TIME_PAST_RANGE)
 
     motor3.off()
     motor4.off()
 
     # Lift fork lift
     motor2.Forward(50)
-    sleep(EXTENSION_TIME)
+    sleep_ms(EXTENSION_TIME)
     motor2.off()
 
     #  Spin 180 (right for depot 1, left for depot 2 to avoid hitting wall)
@@ -220,7 +220,7 @@ def blockpickup(depot):
 def blockdrop():
     """this function drops off the block"""
     #adjustable parameters
-    EXTENSION_TIME = 2
+    EXTENSION_TIME = 2000
     forwardtime = 2000
 
     #go forward for an amount of time following the line to make sure inside zone
@@ -230,7 +230,7 @@ def blockdrop():
 
     #put down block
     motor2.Reverse(50)
-    sleep(EXTENSION_TIME)
+    sleep_ms(EXTENSION_TIME)
     motor2.off()
 
     #reverse out of zone to give turning clearance
@@ -241,11 +241,11 @@ def startspin():
     """this function spins 180 in the start zone"""
     #adjustable parameters
     speed = 50
-    time = 2
+    time = 2000
 
     #spinny time
     motor3.Forward(speed)
     motor4.Reverse(speed)
-    sleep(time)
+    sleep_ms(time)
     motor3.off()
     motor4.off()

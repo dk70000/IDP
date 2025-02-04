@@ -1,11 +1,11 @@
 #this is the main file to be run by picobot
 from navigation import driveforward, cornering, linefollowerbasic, routes, blockpickup, blockdrop, startspin, panic
 from sensors import Line1, Line2, Line3, Line4, button
-from utime import sleep, ticks_ms, ticks_diff
+from utime import sleep_ms, ticks_ms, ticks_diff
 
 CORNERING_SPEED = 50
 LINE_SPEED = 100        # How fast to drive
-FIRST_MOVE_TIME = 2     # How long in seconds to move forward before finding the line
+FIRST_MOVE_TIME = 2000     # How long in seconds to move forward before finding the line
 
 timer = ticks_ms()
 
@@ -15,7 +15,7 @@ while True:
     #don't do anything until the button is pressed
     while button.value() == 0:
         pass
-    sleep(1)
+    sleep_ms(1000)
 
     #initialising variables
     currentblock = 0
@@ -35,7 +35,7 @@ while True:
         if currentcorner == len(routes[currentroute]):
             #this checks if the route ends at a depot
             if currentroute[-1] in "12":
-                newdestination = blockpickup()
+                newdestination = blockpickup(currentroute[-1])
                 currentroute = currentroute[-1] + newdestination
             #this checks if the route ends at a destination
             elif currentroute[-1] in "ABCD":
@@ -54,7 +54,7 @@ while True:
                 currentcorner += 1       # Reset current corner count to start new route after first corner has been turned inside blockdrop function
             #if the route ended at the start, just a 180 spin is needed
             else:
-                driveforward(100,2)
+                driveforward(100,2000)
                 startspin()
                 break
 
@@ -66,3 +66,4 @@ while True:
         #this then follows the line if nothing else is happening
         else:
             linefollowerbasic(LINE_SPEED)
+    sleep_ms(1000)
