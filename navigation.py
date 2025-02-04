@@ -1,6 +1,6 @@
 #this file contains all the navigation functions
 from motors import motor2, motor3, motor4
-from utime import sleep
+from utime import sleep, ticks_ms, ticks_diff
 from sensors import Line2, Line3, IRdistancesensor
 from camera import getroutefromblock
 
@@ -221,10 +221,12 @@ def blockdrop():
     """this function drops off the block"""
     #adjustable parameters
     EXTENSION_TIME = 2
-    forwardtime = 1
+    forwardtime = 2000
 
-    #move forward into zone
-    driveforward(20, forwardtime)
+    #go forward for an amount of time following the line to make sure inside zone
+    start = ticks_ms()
+    while ticks_diff(ticks_ms(), start) < forwardtime:
+        linefollowerbasic(50)
 
     #put down block
     motor2.Reverse(50)
@@ -232,7 +234,7 @@ def blockdrop():
     motor2.off()
 
     #reverse out of zone to give turning clearance
-    drivebackwards(20, forwardtime)
+    drivebackwards(50, forwardtime)
 
 
 def startspin():
