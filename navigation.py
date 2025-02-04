@@ -161,17 +161,19 @@ def panic():
 def blockpickup(depot):
     """this function approaches and picks up the block"""
     #adjustable parameters
-    LINE_FOLLOW_LOOPS = 30
-    QR_CODE_ATTEMPTS = 3
+    STRAIGHTEN_TIME = 700
     QR_CODE_IDEAL_DISTANCE = 300
     QR_CODE_MIN_DISTANCE = 150
-    MIN_RANGE = 20
+    QR_CODE_ATTEMPTS = 3
+    REREAD_MOVE_TIME = 300
+    MIN_IR_RANGE = 20
     TIME_PAST_RANGE = 100
     EXTENSION_TIME = 2000
 
     # Do line following for a fixed amount of time to get straight
-    for i in range(LINE_FOLLOW_LOOPS):
-        linefollowerbasic(100)
+    start = ticks_ms()
+    while ticks_diff(ticks_ms(), start) < STRAIGHTEN_TIME:
+        linefollowerbasic(50)
     
     # Move to 30cm from the block
     try:
@@ -195,14 +197,15 @@ def blockpickup(depot):
         if newdestination != None:
             pass
         else:
-            for i in range(LINE_FOLLOW_LOOPS):  # Move forward to try read again
-                linefollowerbasic(100)
+            start = ticks_ms()      # Move forward to try and read again from closer
+            while ticks_diff(ticks_ms(), start) < REREAD_MOVE_TIME:
+                linefollowerbasic(50)
     
     if newdestination == None:
         return "A"
     
     # Move up to the 20mm from the block and a little bit further
-    while(IRdistancesensor.ping() > MIN_RANGE):
+    while(IRdistancesensor.ping() > MIN_IR_RANGE):
         linefollowerbasic(50)
     sleep_ms(TIME_PAST_RANGE)
 
