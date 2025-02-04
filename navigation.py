@@ -177,6 +177,7 @@ def blockpickup(depot):
 
     # Do line following for a fixed amount of time to get straight
     start = ticks_ms()
+
     while (ticks_diff(ticks_ms(), start) < STRAIGHTEN_TIME) and (button.value() == 0):
         linefollowerbasic(50)
     
@@ -185,10 +186,12 @@ def blockpickup(depot):
         if IRdistancesensor.ping() >= QR_CODE_IDEAL_DISTANCE:
             while (IRdistancesensor.ping() > QR_CODE_IDEAL_DISTANCE) and (button.value() == 0):
                 linefollowerbasic(50)
+
         elif IRdistancesensor.ping() < QR_CODE_MIN_DISTANCE:
             while ((IRdistancesensor.ping() < QR_CODE_MIN_DISTANCE)) and (button.value() == 0):
                 motor3.Reverse(30)
                 motor4.Reverse(30)
+
             QR_CODE_ATTEMPTS = 1    # Don't try and move forward after failed QR code read since it's already too close to the block
     except:
         return "A"  # IR distance sensor doesn't work
@@ -199,10 +202,13 @@ def blockpickup(depot):
     # Try QR code reader a few times, getting closer each time
     for i in range(QR_CODE_ATTEMPTS):
         newdestination = getroutefromblock()
+
         if newdestination != None:
             pass
+
         else:
             start = ticks_ms()      # Move forward to try and read again from closer
+
             while (ticks_diff(ticks_ms(), start) < REREAD_MOVE_TIME) and (button.value() == 0):
                 linefollowerbasic(50)
     
@@ -212,8 +218,8 @@ def blockpickup(depot):
     # Move up to the 20mm from the block and a little bit further
     while (IRdistancesensor.ping() > MIN_IR_RANGE) and (button.value() == 0):
         linefollowerbasic(50)
-    sleep_ms(TIME_PAST_RANGE)
 
+    sleep_ms(TIME_PAST_RANGE)
     motor3.off()
     motor4.off()
 
