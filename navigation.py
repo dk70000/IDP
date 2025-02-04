@@ -121,7 +121,8 @@ def cornering(direction, speed):
 def panic():
     """function to try and find the line by rotating in both directions"""
     #adjustable parameters
-    loops = 50
+    time = 500
+    timer = ticks_ms()
 
     #spin in each direction increasingly far
     linefound = 0
@@ -129,9 +130,10 @@ def panic():
 
     while linefound == 0:
         
-        for loop in range(0, turns*loops):
-            motor3.Forward(30)
-            motor4.Reverse(30)
+        motor3.Forward(50)
+        motor4.Reverse(50)
+
+        while ticks_diff(ticks_ms(), timer) < time * turns:
             if Line3.value() == 1:
                 motor3.off()
                 motor4.off()
@@ -140,9 +142,13 @@ def panic():
         
         turns += 1
 
-        for loop in range(0, turns*loops):
-            motor4.Forward(30)
-            motor3.Reverse(30)
+        if linefound == 1:
+            break
+
+        motor3.Reverse(50)
+        motor4.Forward(50)
+
+        while ticks_diff(ticks_ms(), timer) < time * turns:
             if Line2.value() == 1:
                 motor3.off()
                 motor4.off()
