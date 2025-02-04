@@ -41,7 +41,7 @@ while True:
             elif currentroute[-1] in "ABCD":
                 blockdrop()
                 currentblock += 1
-                if ticks_diff(ticks_ms, timer) > 300000:
+                if ticks_diff(ticks_ms, timer) > 255000:
                     currentroute = currentroute[-1] + "S"
                 elif currentblock < 4:
                     currentroute = currentroute[-1] + "1"
@@ -54,7 +54,9 @@ while True:
                 currentcorner += 1       # Reset current corner count to start new route after first corner has been turned inside blockdrop function
             #if the route ended at the start, just a 180 spin is needed
             else:
+                driveforward(100,2)
                 startspin()
+                break
 
         #this checks if a corner has been reached and turns it
         elif Line1.value() or Line4.value:
