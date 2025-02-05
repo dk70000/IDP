@@ -12,7 +12,7 @@ Line4 = Pin(10, Pin.IN)
 button = Pin(19, Pin.IN, Pin.PULL_DOWN)
 
 # QR sensor
-QRreader = I2C(1, scl=Pin(17), sda=Pin(16), freq=400000)
+QRreader = I2C(1, sda=Pin(18), scl=Pin(19), freq=400000)
 
 # Crash sensor
 crashsensor = Pin(12, Pin.IN)
