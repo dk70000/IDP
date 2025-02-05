@@ -177,7 +177,6 @@ def blockpickup(depot):
 
     # Do line following for a fixed amount of time to get straight
     start = ticks_ms()
-
     while (ticks_diff(ticks_ms(), start) < STRAIGHTEN_TIME) and (button.value() == 0):
         linefollowerbasic(50)
     

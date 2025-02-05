@@ -36,7 +36,7 @@ while True:  # Overall loop to always run while on
             elif currentroute[-1] in "ABCD":    # This checks if the route ends at a destination
                 blockdrop()
                 currentblock += 1
-                if ticks_diff(ticks_ms, timer) > 255000:
+                if ticks_diff(ticks_ms(), timer) > 255000:
                     currentroute = currentroute[-1] + "S"
                 elif currentblock < 4:
                     currentroute = currentroute[-1] + "1"
