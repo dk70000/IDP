@@ -2,6 +2,7 @@
 from navigation import driveforward, cornering, linefollowerbasic, routes, blockpickup, blockdrop, startspin, panic
 from sensors import Line1, Line2, Line3, Line4, button
 from utime import sleep_ms, ticks_ms, ticks_diff
+from motors import motor2, motor3, motor4
 
 CORNERING_SPEED = 50
 LINE_SPEED = 100        # How fast to drive
@@ -60,4 +61,7 @@ while True:  # Overall loop to always run while on
         else:   # This then follows the line if nothing else is happening
             linefollowerbasic(LINE_SPEED)
 
+    motor2.off()
+    motor3.off()
+    motor4.off()
     sleep_ms(1000)  # Sleep after button pressed so that second press isn't triggered
