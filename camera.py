@@ -3,6 +3,7 @@ import network
 from struct import calcsize, unpack_from # This module converts between Python values and C structs represented as Python bytes objects.
 from time import sleep
 from machine import Pin, I2C
+from sensors import QRreader
 
 # NOTE INCORRECT CONNECTIONS WILL DESTROY THE SENSOR. CHECK WITH BENCH MULTIMETER BEFORE POWER/USE
 # Red---3v3
@@ -24,7 +25,7 @@ def readQR(readattempts):
     TINY_CODE_READER_I2C_BYTE_COUNT = calcsize(TINY_CODE_READER_I2C_FORMAT)
     # Set up for the Pico, pin numbers will vary according to your setup.
     #                           Yellow              Blue
-    i2c = I2C(1, scl=Pin(19), sda=Pin(18), freq=400000)
+    i2c = QRreader
     print(i2c.scan())
     # Keep looping and reading the sensor results until we get a QR code
     for i in range(readattempts):
