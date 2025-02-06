@@ -94,8 +94,8 @@ def linefollowerbasic(speed):
 def cornering(direction, speed):
     """Cornering function"""
 
-    MOVE_FORWARD_TIME = 100
-    INITIAL_TURN_TIME = 200
+    MOVE_FORWARD_TIME = 500
+    INITIAL_TURN_TIME = 300
 
     driveforward(speed, MOVE_FORWARD_TIME)  # Move forward a little before turning
 
@@ -137,7 +137,7 @@ def panic():
         motor4.Reverse(50)
 
         while (ticks_diff(ticks_ms(), timer) < TURN_TIME * turns) and (button.value() == 0):
-            if Line3.value() == 1:
+            if Line2.value() == 1:
                 motor3.off()
                 motor4.off()
                 linefound = 1
@@ -154,7 +154,7 @@ def panic():
         motor4.Forward(50)
 
         while (ticks_diff(ticks_ms(), timer) < TURN_TIME * turns) and (button.value() == 0):
-            if Line2.value() == 1:
+            if Line3.value() == 1:
                 motor3.off()
                 motor4.off()
                 linefound = 1
@@ -173,7 +173,7 @@ def blockpickup(depot):
     REREAD_MOVE_TIME = 300
     MIN_IR_RANGE = 20
     TIME_PAST_RANGE = 100
-    EXTENSION_TIME = 2000
+    EXTENSION_TIME = 6000
 
     # Do line following for a fixed amount of time to get straight
     start = ticks_ms()
@@ -239,7 +239,7 @@ def blockpickup(depot):
 def blockdrop():
     """This function drops off the block"""
 
-    EXTENSION_TIME = 2000
+    EXTENSION_TIME = 6000
     FORWARD_TIME = 2000
 
     # Go forward for an amount of time following the line to make sure inside zone
