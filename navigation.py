@@ -235,9 +235,9 @@ def blockpickup(depot):
 
     #  Spin 180 (right for depot 1, left for depot 2 to avoid hitting wall)
     if depot == 1:
-        cornering("L", 100)
-    else:
         cornering("R", 100)
+    else:
+        cornering("L", 100)
     
     return newdestination   # Return the value read from the QR code reader (default to A if no code found)
 
