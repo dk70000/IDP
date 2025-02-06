@@ -3,7 +3,7 @@ from navigation import driveforward, cornering, linefollowerbasic, routes, block
 from sensors import Line1, Line2, Line3, Line4, button
 from utime import sleep_ms, ticks_ms, ticks_diff
 from motors import motor2, motor3, motor4
-
+from stop import stop
 CORNERING_SPEED = 100
 LINE_SPEED = 100        # How fast to drive
 FIRST_MOVE_TIME = 1000     # How long in seconds to move forward before finding the line
@@ -32,9 +32,12 @@ while True:  # Overall loop to always run while on
             
             if currentroute[-1] in "12":    # This checks if the route ends at a depot
                 newdestination = blockpickup(currentroute[-1])
-                currentroute = currentroute[-1] + newdestination
+                if newdestination != "N":
+                    currentroute = str(currentroute[-1]) + str(newdestination)
+                else:
+                    currentroute = str(currentroute[-1]) + "A"
             
-            elif currentroute[-1] in "ABCD":    # This checks if the route ends at a destination
+            elif currentroute[-1] in "ABCD":    # This checkrrs if the route ends at a destination
                 blockdrop()
                 currentblock += 1
                 if ticks_diff(ticks_ms(), timer) > 255000:
@@ -61,7 +64,7 @@ while True:  # Overall loop to always run while on
         else:   # This then follows the line if nothing else is happening
             linefollowerbasic(LINE_SPEED)
 
-    motor2.off()
-    motor3.off()
-    motor4.off()
+    stop()
     sleep_ms(1000)  # Sleep after button pressed so that second press isn't triggered
+
+
