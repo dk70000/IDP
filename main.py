@@ -6,7 +6,7 @@ from motors import motor2, motor3, motor4
 
 CORNERING_SPEED = 100
 LINE_SPEED = 100        # How fast to drive
-FIRST_MOVE_TIME = 700     # How long in seconds to move forward before finding the line
+FIRST_MOVE_TIME = 1000     # How long in seconds to move forward before finding the line
 
 timer = ticks_ms()
 
@@ -54,7 +54,7 @@ while True:  # Overall loop to always run while on
                 startspin()
                 break
 
-        elif Line1.value() or Line4.value():      # This checks if a corner has been reached and turns it
+        elif (Line1.value() and routes[currentroute][currentcorner] == "L") or (Line4.value() and routes[currentroute][currentcorner] == "R"):    # This checks if a corner has been reached and turns it
             cornering(routes[currentroute][currentcorner], CORNERING_SPEED)
             currentcorner += 1
         
