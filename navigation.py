@@ -206,7 +206,7 @@ def blockpickup(depot):
         newdestination = getroutefromblock()
         print(newdestination)
         if newdestination != None:
-            pass
+            break
 
         else:
             start = ticks_ms()      # Move forward to try and read again from closer
