@@ -47,9 +47,9 @@ def readQR(readattempts):
 #this function is the function that gathers everything together to export the required route
 def getroutefromblock():
     READ_ATTEMPTS = 1
-    code = str(readQR(READ_ATTEMPTS))
+    code = readQR(READ_ATTEMPTS)
     if code == None:
         return None
     else:
-        destination = code[0]
+        destination = str(code)[0]
         return destination
