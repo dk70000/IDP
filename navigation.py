@@ -178,7 +178,8 @@ def blockpickup(depot):
     # Do line following for a fixed amount of time to get straight
     start = ticks_ms()
     
-    newdestination = "N"
+    newdestination = "N"    # Setup the default value of the QR code read to None so it loops untill it's not None
+    # Immediately after turning the corner, move forward to straighten up, then reverse make sure it is scanned, then drive forward and pick up the block
     while (ticks_diff(ticks_ms(), start) < STRAIGHTEN_TIME) and (button.value() == 0):
         if newdestination == "N":
             newdestination = getroutefromblock()
@@ -187,9 +188,8 @@ def blockpickup(depot):
 
     motor3.Reverse(100)
     motor4.Reverse(100)
-    while (ticks_diff(ticks_ms(), start) < STRAIGHTEN_TIME) and (button.value() == 0):
-        if newdestination == "N":
-            newdestination = getroutefromblock()
+    while (ticks_diff(ticks_ms(), start) < STRAIGHTEN_TIME) and (button.value() == 0) and (newdestination == "N"):
+        newdestination = getroutefromblock()
     motor3.off()
     motor4.off()
    
