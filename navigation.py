@@ -92,7 +92,7 @@ def linefollowerbasic(speed=100):
     sleep_ms(SLEEP_TIME) # Allow a little time to move before next loop
 
 
-def cornering(direction, speed=100, MOVE_FORWARD_TIME=500, INITIAL_TURN_TIME=500):
+def cornering(direction, speed=100, MOVE_FORWARD_TIME=450, INITIAL_TURN_TIME=500):
     """Cornering function"""
 
     driveforward(speed, MOVE_FORWARD_TIME)  # Move forward a little before turning
