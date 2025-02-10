@@ -165,6 +165,7 @@ def blockpickup(depot):
     """This function approaches and picks up the block"""
 
     STRAIGHTEN_TIME = 400
+    REVERSE_TIME = 1000
     QR_CODE_IDEAL_DISTANCE = 300
     QR_CODE_MIN_DISTANCE = 150
     QR_CODE_ATTEMPTS = 3
@@ -176,18 +177,22 @@ def blockpickup(depot):
 
     # Do line following for a fixed amount of time to get straight
     start = ticks_ms()
-
+    
+    newdestination = "N"
     while (ticks_diff(ticks_ms(), start) < STRAIGHTEN_TIME) and (button.value() == 0):
+        if newdestination == "N":
+            newdestination = getroutefromblock()
         linefollowerbasic(LINE_FOLLOWER_SPEED)
     print("finished straightening")
 
-    drivebackwards(100, 1000)
-                
+    motor3.Reverse(100)
+    motor4.Reverse(100)
+    while (ticks_diff(ticks_ms(), start) < STRAIGHTEN_TIME) and (button.value() == 0):
+        if newdestination == "N":
+            newdestination = getroutefromblock()
     motor3.off()
     motor4.off()
-    
-    newdestination = "N"
-
+   
     # Move up to the 20mm from the block and a little bit further
     while (IRdistancesensor.ping() > MIN_IR_RANGE) and (button.value() == 0):
         if newdestination == "N":
@@ -239,7 +244,7 @@ def blockdrop():
     sleep_ms(EXTENSION_TIME)
     motor2.off()
 
-    drivebackwards(50, FORWARD_TIME)    # Reverse out of zone to give turning clearance
+    drivebackwards(100, FORWARD_TIME)    # Reverse out of zone to give turning clearance
 
 
 def startspin():
