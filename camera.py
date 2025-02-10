@@ -49,7 +49,7 @@ def getroutefromblock():
     READ_ATTEMPTS = 1
     code = readQR(READ_ATTEMPTS)
     if code == None:
-        return None
+        return "N"
     else:
         destination = str(code)[0]
         return destination
