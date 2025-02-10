@@ -72,10 +72,13 @@ while True:  # Overall loop to always run while on
             start = ticks_ms()
             while (ticks_diff(ticks_ms(), start) < BLIND_TIME) and (button.value() == 0):
                 linefollowerbasic(LINE_SPEED)
-            print(routes[currentroute][currentcorner])
+
         
         else:   # This then follows the line if nothing else is happening
             linefollowerbasic(LINE_SPEED)
     
     light.value(0)
     stop()
+
+
+

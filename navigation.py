@@ -18,7 +18,7 @@ routes = {"S1":"RR",
           "2A":"RL",
           "2B":"NRNR",
           "2C":"NRLL",
-          "2D":"NNRNR",
+          "2D":"NRLNRR",
           "A1":"RNR",       # When leaving the depot, turn in the opposite dirrection
           "B1":"LRN",       # for the first instruction since we have to reverse out
           "C1":"LLNRN",
@@ -26,7 +26,7 @@ routes = {"S1":"RR",
           "A2":"LL",
           "B2":"RNLN",
           "C2":"LRLN",
-          "D2":"RNLNN",
+          "D2":"RLNRLN",
           "1S":"LL",
           "2S":"RNR"}
 
@@ -92,7 +92,7 @@ def linefollowerbasic(speed=100):
     sleep_ms(SLEEP_TIME) # Allow a little time to move before next loop
 
 
-def cornering(direction, speed=100, MOVE_FORWARD_TIME=450, INITIAL_TURN_TIME=500):
+def cornering(direction, speed=100, MOVE_FORWARD_TIME=470, INITIAL_TURN_TIME=500):
     """Cornering function"""
 
     driveforward(speed, MOVE_FORWARD_TIME)  # Move forward a little before turning
@@ -171,7 +171,7 @@ def blockpickup(depot):
     QR_CODE_ATTEMPTS = 3
     REREAD_MOVE_TIME = 300
     MIN_IR_RANGE = 60
-    TIME_PAST_RANGE = 300
+    TIME_PAST_RANGE = 150
     EXTENSION_TIME = 6000
     LINE_FOLLOWER_SPEED = 100
 
@@ -186,14 +186,16 @@ def blockpickup(depot):
         linefollowerbasic(LINE_FOLLOWER_SPEED)
     print("finished straightening")
 
+    start = ticks_ms()
     motor3.Reverse(100)
     motor4.Reverse(100)
-    while (ticks_diff(ticks_ms(), start) < STRAIGHTEN_TIME) and (button.value() == 0) and (newdestination == "N"):
+    while (ticks_diff(ticks_ms(), start) < REVERSE_TIME) and (button.value() == 0):
         newdestination = getroutefromblock()
     motor3.off()
     motor4.off()
    
     # Move up to the 20mm from the block and a little bit further
+    IRdistancesensor.ping()
     while (IRdistancesensor.ping() > MIN_IR_RANGE) and (button.value() == 0):
         if newdestination == "N":
             newdestination = getroutefromblock()
@@ -260,3 +262,4 @@ def startspin():
     motor4.off()
 
 
+#driveforward(100,10000)
