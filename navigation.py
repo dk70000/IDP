@@ -239,10 +239,10 @@ def blockdrop():
     drivebackwards(100, FORWARD_TIME)    # Reverse out of zone to give turning clearance
 
 
-def startspin():
-    """This function spins 180 in the start zone"""
-    SPEED = 50
-    TIME = 2000
+def startzonespin():
+    """This function spins in the start zone"""
+    SPEED = 100
+    TIME = 10000
 
     #spinny time
     motor3.Forward(SPEED)

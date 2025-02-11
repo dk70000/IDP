@@ -1,5 +1,5 @@
 # This is the main file to be run by picobot
-from navigation import driveforward, cornering, linefollowerbasic, routes, blockpickup, blockdrop, startspin, panic
+from navigation import driveforward, cornering, linefollowerbasic, routes, blockpickup, blockdrop, startzonespin, panic
 from sensors import Line1, Line2, Line3, Line4, button, light
 from utime import sleep_ms, ticks_ms, ticks_diff
 from stop import stop
@@ -55,7 +55,7 @@ while True:  # Overall loop to always run while on
 
             else:     # If the route ended at the start, just a 180 spin is needed
                 driveforward(100,2000)
-                startspin()
+                startzonespin()
                 break
 
         elif (Line1.value() and routes[currentroute][currentcorner] == "L") or (Line4.value() and routes[currentroute][currentcorner] == "R"):    # This checks if a corner has been reached and turns it
