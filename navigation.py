@@ -31,8 +31,7 @@ routes = {"S1":"RR",
           "2S":"RNR"}
 
 def driveforward(speed, time):
-    """Simply drives fowards"""
-
+    """Simply drives fowards with a specified speed and time"""
     motor3.Forward(speed)
     motor4.Forward(speed)
     sleep_ms(time)
@@ -40,37 +39,21 @@ def driveforward(speed, time):
     motor4.off()
 
 def drivebackwards(speed, time):
-    """Simply drives backwards"""
+    """Simply drives backwards with a specified speed and time"""
     motor3.Reverse(speed)
     motor4.Reverse(speed)
     sleep_ms(time)
     motor3.off()
     motor4.off()
 
-# Haven't used these functions yet cause most of the time you need to watch for a line
-'''
-def spinleft(speed, time):
-    motor3.Reverse(speed)
-    motor4.Forward(speed)
-    sleep(time)
-    motor3.off()
-    motor4.off()
-
-def spinright(speed, time):
-    motor3.Forward(speed)
-    motor4.Reverse(speed)
-    sleep(time)
-    motor3.off()
-    motor4.off()
-'''
 
 def linefollowerbasic(speed=100):
-    """First attempt at a line follower algorithm"""
+    """Simple line following algorithm. Contains no loop, so needs to be called repeatedly."""
 
-    SPEED_RATIO = 0.8
-    SLEEP_TIME = 0
+    SPEED_RATIO = 0.8   # Ratio between speed of outer wheel to speed of inner wheel when turning
+    SLEEP_TIME = 0  # Time to sleep at the end, currently set to zero, but there in case
 
-    Line = [Line2.value(), Line3.value()]
+    Line = [Line2.value(), Line3.value()]   # Define in list for readability of if statements
 
     # Line following with two sensors just inside line
     if Line == [1, 1]:
@@ -93,7 +76,7 @@ def linefollowerbasic(speed=100):
 
 
 def cornering(direction, speed=100, MOVE_FORWARD_TIME=470, INITIAL_TURN_TIME=500):
-    """Cornering function"""
+    """Turns a corner in the specified direction"""
 
     driveforward(speed, MOVE_FORWARD_TIME)  # Move forward a little before turning
 
@@ -121,7 +104,6 @@ def cornering(direction, speed=100, MOVE_FORWARD_TIME=470, INITIAL_TURN_TIME=500
 
 def panic():
     """Function to try and find the line by rotating in both directions"""
-    print("panicking")
     TURN_TIME = 500 # Time duration of initial oscillation
 
     linefound = 0
@@ -135,7 +117,7 @@ def panic():
         motor4.Reverse(50)
 
         while (ticks_diff(ticks_ms(), timer) < TURN_TIME * turns) and (button.value() == 0):
-            if Line2.value() == 1:
+            if Line2.value() == 1:  # Stops turning if finds line and breaks out
                 motor3.off()
                 motor4.off()
                 linefound = 1
@@ -143,7 +125,7 @@ def panic():
         
         turns += 1
 
-        if linefound == 1:
+        if linefound == 1:  # Breaks out of whole function if above loop found the line
             break
         
         timer = ticks_ms()  # Reference timer for turn
@@ -164,33 +146,29 @@ def panic():
 def blockpickup(depot):
     """This function approaches and picks up the block"""
 
-    STRAIGHTEN_TIME = 400
-    REVERSE_TIME = 1000
-    QR_CODE_IDEAL_DISTANCE = 300
-    QR_CODE_MIN_DISTANCE = 150
-    QR_CODE_ATTEMPTS = 3
-    REREAD_MOVE_TIME = 300
-    MIN_IR_RANGE = 60
-    TIME_PAST_RANGE = 150
-    EXTENSION_TIME = 6000
-    LINE_FOLLOWER_SPEED = 100
+    STRAIGHTEN_TIME = 400   # Time to straighten with line following after initial turn
+    REVERSE_TIME = 1000 # Time to reverse after straightening to allow QR read
+    MIN_IR_RANGE = 60   # Minimum reliable range of the IR sensor
+    TIME_PAST_RANGE = 150   # Time to move forwards after MIN_IR_RANGE has been reached
+    EXTENSION_TIME = 6000   # Time to raise/lower forklift
+    LINE_FOLLOWER_SPEED = 100   # Speed at which to follow line by default
 
     # Do line following for a fixed amount of time to get straight
     start = ticks_ms()
     
-    newdestination = "N"    # Setup the default value of the QR code read to None so it loops untill it's not None
+    newdestination = "N"    # Setup the default value of the QR code read to None so it loops until it's not None
     # Immediately after turning the corner, move forward to straighten up, then reverse make sure it is scanned, then drive forward and pick up the block
     while (ticks_diff(ticks_ms(), start) < STRAIGHTEN_TIME) and (button.value() == 0):
-        if newdestination == "N":
+        if newdestination == "N":   # Only need to check value if hasn't already been read
             newdestination = getroutefromblock()
         linefollowerbasic(LINE_FOLLOWER_SPEED)
-    print("finished straightening")
 
     start = ticks_ms()
-    motor3.Reverse(100)
+    motor3.Reverse(100) # Reverse a little to allow distance to read block
     motor4.Reverse(100)
     while (ticks_diff(ticks_ms(), start) < REVERSE_TIME) and (button.value() == 0):
-        newdestination = getroutefromblock()
+        if newdestination == "N":
+            newdestination = getroutefromblock()
     motor3.off()
     motor4.off()
    
@@ -260,6 +238,3 @@ def startspin():
     sleep_ms(TIME)
     motor3.off()
     motor4.off()
-
-
-#driveforward(100,10000)

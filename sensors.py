@@ -21,6 +21,6 @@ crashsensor = Pin(12, Pin.IN)
 IRdistancesensor = I2C(1, sda=Pin(26), scl=Pin(27))
 IRdistancesensor = VL53L0X(IRdistancesensor)
 
-#Flashing light
+# Flashing light power (flashing controlled by analogue circuit, this is just power)
 light = Pin(28, Pin.OUT)
 

@@ -3,10 +3,10 @@
 from machine import Pin, PWM
 
 
-class Motor:
+class Motor:    # Define main Motor class
     def __init__(self,motorNo):
         
-        if motorNo == 3:
+        if motorNo == 3:    # Quick if statement just to make calling it elsewhere easier
             pins = [4,5]
         elif motorNo == 4:
             pins = [7,6]
@@ -24,7 +24,7 @@ class Motor:
         self.m1Dir.value(1)
         self.pwm1.duty_u16(int(65535*speed/100))
 
-class ActuatorMotor:
+class ActuatorMotor:    #   Define actuator motor separately just for clarity in calling
     def __init__(self):
         pins = [3,2]  
         self.m1Dir = Pin(pins[0] , Pin.OUT) # Set motor direction
@@ -41,7 +41,7 @@ class ActuatorMotor:
         self.pwm1.duty_u16(int(65535*speed/100))
 
 
-# motor3 is left, motor4 is right
+# motor3 is left, motor4 is right, motor2 is actuator
 motor2=ActuatorMotor()
 motor3=Motor(3)
 motor4=Motor(4)

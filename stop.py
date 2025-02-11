@@ -3,6 +3,7 @@ from utime import sleep_ms
 
 
 def stop():
+    """Function to stop the robot and reset the forklift position"""
     motor3.off()
     motor4.off()
 

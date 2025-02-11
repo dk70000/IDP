@@ -13,6 +13,8 @@ from sensors import QRreader
 # The code reader has the I2C ID of hex 0c, or decimal 12.
 
 def readQR(readattempts):
+    """Gets QR code message from QR reader"""
+
     TINY_CODE_READER_I2C_ADDRESS = 0x0C
     # How long to pause between sensor polls.
     TINY_CODE_READER_DELAY = 0.05
@@ -26,7 +28,6 @@ def readQR(readattempts):
     # Set up for the Pico, pin numbers will vary according to your setup.
     #                           Yellow              Blue
     i2c = QRreader
-    print(i2c.scan())
     # Keep looping and reading the sensor results until we get a QR code
     for i in range(readattempts):
         sleep(TINY_CODE_READER_DELAY)
@@ -35,21 +36,20 @@ def readQR(readattempts):
         message_length, = unpack_from(TINY_CODE_READER_LENGTH_FORMAT, read_data, TINY_CODE_READER_LENGTH_OFFSET)
         message_bytes = unpack_from(TINY_CODE_READER_MESSAGE_FORMAT, read_data, TINY_CODE_READER_MESSAGE_OFFSET)
         if message_length == 0:
-            #print('nothing')
             continue
         try:
             message_string = bytearray(message_bytes[0:message_length]).decode("utf-8")
-            #print('barcode:', message_string)
             return message_string
         except:
             continue    # Couldn't decode QR code so try again
 
 #this function is the function that gathers everything together to export the required route
 def getroutefromblock():
+    """Takes QR code message and just returns the first character (the destination)"""
     READ_ATTEMPTS = 1
     code = readQR(READ_ATTEMPTS)
     if code == None:
-        return "N"
+        return "N"  # Value of N is then dealt with in main.py
     else:
         destination = str(code)[0]
         return destination
