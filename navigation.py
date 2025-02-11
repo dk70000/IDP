@@ -77,6 +77,7 @@ def linefollowerbasic(speed=100):
 
 def cornering(direction, speed=100, MOVE_FORWARD_TIME=470, INITIAL_TURN_TIME=500):
     """Turns a corner in the specified direction"""
+    BLIND_CORRECTION = 200
 
     driveforward(speed, MOVE_FORWARD_TIME)  # Move forward a little before turning
 
@@ -89,6 +90,12 @@ def cornering(direction, speed=100, MOVE_FORWARD_TIME=470, INITIAL_TURN_TIME=500
         while (Line3.value() == 0) and (button.value() == 0):   # Now wait until sensor hits line again
             pass
 
+        timer = ticks_ms()
+
+        while ticks_diff(timer,ticks_ms) < BLIND_CORRECTION:    # Turn a little more past finding the line
+            pass
+
+
     if direction == "R":
 
         motor3.Forward(speed)   # Turn blindly a little to get sensors off line
@@ -96,6 +103,11 @@ def cornering(direction, speed=100, MOVE_FORWARD_TIME=470, INITIAL_TURN_TIME=500
         sleep_ms(INITIAL_TURN_TIME)
 
         while (Line2.value() == 0) and (button.value() == 0):   # Now wait until sensor hits line again
+            pass
+
+        timer = ticks_ms()
+
+        while ticks_diff(timer,ticks_ms) < BLIND_CORRECTION:    # Turn a little more past finding the line
             pass
 
     motor3.off()
