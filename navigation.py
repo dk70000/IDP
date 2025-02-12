@@ -28,7 +28,11 @@ routes = {"S1":"RR",
           "C2":"LRLN",
           "D2":"RLNRLN",
           "1S":"LL",
-          "2S":"RNR"}
+          "2S":"RNR",
+          "AS":"RR",
+          "BS":"LRRL",
+          "CS":"LLNRRL",
+          "DS":"LRNRNRL"}
 
 def driveforward(speed, time):
     """Simply drives fowards with a specified speed and time"""
@@ -77,7 +81,7 @@ def linefollowerbasic(speed=100):
 
 def cornering(direction, speed=100, MOVE_FORWARD_TIME=470, INITIAL_TURN_TIME=500):
     """Turns a corner in the specified direction"""
-    BLIND_CORRECTION = 200
+    BLIND_CORRECTION = 10
 
     driveforward(speed, MOVE_FORWARD_TIME)  # Move forward a little before turning
 
@@ -92,7 +96,7 @@ def cornering(direction, speed=100, MOVE_FORWARD_TIME=470, INITIAL_TURN_TIME=500
 
         timer = ticks_ms()
 
-        while ticks_diff(timer,ticks_ms) < BLIND_CORRECTION:    # Turn a little more past finding the line
+        while ticks_diff(ticks_ms(), timer) < BLIND_CORRECTION:    # Turn a little more past finding the line
             pass
 
 
@@ -107,7 +111,7 @@ def cornering(direction, speed=100, MOVE_FORWARD_TIME=470, INITIAL_TURN_TIME=500
 
         timer = ticks_ms()
 
-        while ticks_diff(timer,ticks_ms) < BLIND_CORRECTION:    # Turn a little more past finding the line
+        while ticks_diff(ticks_ms(), timer) < BLIND_CORRECTION:	# Turn a little more past finding the line
             pass
 
     motor3.off()
@@ -155,7 +159,7 @@ def panic():
         turns += 1
 
 
-def blockpickup(depot):
+def blockpickup(currentblock):
     """This function approaches and picks up the block"""
 
     STRAIGHTEN_TIME = 400   # Time to straighten with line following after initial turn
@@ -203,14 +207,14 @@ def blockpickup(depot):
     motor2.off()
 
     #  Spin 180 (right for depot 1, left for depot 2 to avoid hitting wall)
-    if depot == 1:
+    if int(currentblock//4)+1 == 1:
         cornering("R", 100, 0, 1000)
     else:
         cornering("L", 100, 0, 1000)
         
     drivebackwards(100,300)
     start = ticks_ms()
-    while (ticks_diff(ticks_ms(), start) < TIME_PAST_RANGE) and (button.value() == 0):
+    while (ticks_diff(ticks_ms(), start) < 300*currentblock) and (button.value() == 0):
         linefollowerbasic(LINE_FOLLOWER_SPEED)
     
     
@@ -250,3 +254,4 @@ def startzonespin():
     sleep_ms(TIME)
     motor3.off()
     motor4.off()
+
