@@ -31,7 +31,7 @@ while True:  # Overall loop to always run while on
         if currentcorner == len(routes[currentroute]):  # This statement checks if the end of a route has been reached
             
             if currentroute[-1] in "12":    # This checks if the route ends at a depot
-                newdestination = blockpickup(int(currentblock//4)+1)    # Picks up the block and returns the destination from the QR code
+                newdestination = blockpickup(currentblock)    # Picks up the block and returns the destination from the QR code
                 if newdestination != "N":
                     currentroute = str(currentroute[-1]) + str(newdestination)
                 else:
@@ -74,6 +74,7 @@ while True:  # Overall loop to always run while on
     
     light.value(0)  # Remove power from flasher circuit
     stop()  # Stops motors and resets forklift height
+
 
 
 
