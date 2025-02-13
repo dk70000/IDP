@@ -1,7 +1,7 @@
 # This file contains all the navigation functions
 from motors import motor2, motor3, motor4
 from utime import sleep_ms, ticks_ms, ticks_diff
-from sensors import Line2, Line3, IRdistancesensor, button
+from sensors import Line1, Line2, Line3, Line4, IRdistancesensor, button
 from camera import getroutefromblock
 
 # This contains the routes to take to and from each position
@@ -32,7 +32,7 @@ routes = {"S1":"RR",
           "AS":"RR",
           "BS":"LRRL",
           "CS":"LLNRRL",
-          "DS":"LRNRNRL"}
+          "DS":"LRNRL"}
 
 def driveforward(speed, time):
     """Simply drives fowards with a specified speed and time"""
@@ -214,7 +214,7 @@ def blockpickup(currentblock):
         
     drivebackwards(100,300)
     start = ticks_ms()
-    while (ticks_diff(ticks_ms(), start) < 300*currentblock) and (button.value() == 0):
+    while (ticks_diff(ticks_ms(), start) < 300*(currentblock%4)) and (button.value() == 0):
         linefollowerbasic(LINE_FOLLOWER_SPEED)
     
     
@@ -227,20 +227,21 @@ def blockdrop():
     motor4.off()
     
     EXTENSION_TIME = 6000
-    FORWARD_TIME = 1000
 
     # Go forward for an amount of time following the line to make sure inside zone
     start = ticks_ms()
-    while (ticks_diff(ticks_ms(), start) < FORWARD_TIME) and (button.value() == 0):
+    while (Line1.value() == 0 and Line4.value() == 0) and (button.value() == 0):
         linefollowerbasic(100)
-    motor3.off()
-    motor4.off()
+        
+    forwardtime = (ticks_diff(ticks_ms(), start))
+    
+    driveforward(100,300)
 
     motor2.Forward(100)  # Put down block
     sleep_ms(EXTENSION_TIME)
     motor2.off()
 
-    drivebackwards(100, FORWARD_TIME)    # Reverse out of zone to give turning clearance
+    drivebackwards(100, forwardtime + 300)    # Reverse out of zone to give turning clearance
 
 
 def startzonespin():
