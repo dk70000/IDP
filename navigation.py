@@ -255,4 +255,19 @@ def startzonespin():
     sleep_ms(TIME)
     motor3.off()
     motor4.off()
+    
+def endfunction():
+    while (Line1.value() == 0 or Line4.value() == 0) and (button.value() == 0):
+        linefollowerbasic(100)
+    
+    motor3.Forward(100)
+    motor4.Forward(100)
+    
+    IRdistancesensor.ping()
+    while (IRdistancesensor.ping() > 115) and (button.value() == 0):
+        pass
+    motor3.off()
+    motor4.off()
+    
+
 
