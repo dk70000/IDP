@@ -162,11 +162,11 @@ def panic():
 def blockpickup(currentblock):
     """This function approaches and picks up the block"""
 
-    STRAIGHTEN_TIME = 400   # Time to straighten with line following after initial turn
-    REVERSE_TIME = 1000 # Time to reverse after straightening to allow QR read
+    STRAIGHTEN_TIME = 800   # Time to straighten with line following after initial turn
+    REVERSE_TIME = 1400 # Time to reverse after straightening to allow QR read
     MIN_IR_RANGE = 60   # Minimum reliable range of the IR sensor
     TIME_PAST_RANGE = 150   # Time to move forwards after MIN_IR_RANGE has been reached
-    EXTENSION_TIME = 6000   # Time to raise/lower forklift
+    EXTENSION_TIME = 6500   # Time to raise/lower forklift
     LINE_FOLLOWER_SPEED = 100   # Speed at which to follow line by default
 
     # Do line following for a fixed amount of time to get straight
