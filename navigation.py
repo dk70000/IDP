@@ -10,7 +10,7 @@ from camera import getroutefromblock
 # L is left, R is right, N is null.
 
 routes = {"S1":"RR",
-          "S2":"LNL",
+          "S2":"NLNL",
           "1A":"LNR",
           "1B":"NLL",
           "1C":"NLNRL",
@@ -159,7 +159,7 @@ def panic():
         turns += 1
 
 
-def blockpickup(currentblock):
+def blockpickup(currentblock, currentroute):
     """This function approaches and picks up the block"""
 
     STRAIGHTEN_TIME = 800   # Time to straighten with line following after initial turn
@@ -178,6 +178,26 @@ def blockpickup(currentblock):
         if newdestination == "N":   # Only need to check value if hasn't already been read
             newdestination = getroutefromblock()
         linefollowerbasic(LINE_FOLLOWER_SPEED)
+        
+    
+    
+    if currentroute in ["S1","A1"]: # A little bit of extra turning correction when turning right into depot 1
+        timer = ticks_ms()
+        motor3.Forward(100)
+        motor4.Reverse(100)
+        while ticks_diff(ticks_ms(), timer) < 50:
+            pass
+        motor3.off()
+        motor4.off()
+    elif currentroute in ["S2", "A2"]: # A little bit of extra turning correction when turning left into depot 2
+        timer = ticks_ms()
+        motor4.Forward(100)
+        motor3.Reverse(100)
+        while ticks_diff(ticks_ms(), timer) < 50:
+            pass
+        motor3.off()
+        motor4.off()
+        
 
     start = ticks_ms()
     motor3.Reverse(100) # Reverse a little to allow distance to read block
@@ -197,7 +217,7 @@ def blockpickup(currentblock):
 
     start = ticks_ms()
     while (ticks_diff(ticks_ms(), start) < TIME_PAST_RANGE) and (button.value() == 0):
-        linefollowerbasic(LINE_FOLLOWER_SPEED)
+        linefollowerbasic(LINE_FOLLOWER_SPEED)  # Go forward a little bit further once the block is in range
     motor3.off()
     motor4.off()
 
@@ -215,7 +235,7 @@ def blockpickup(currentblock):
     drivebackwards(100,300)
     start = ticks_ms()
     while (ticks_diff(ticks_ms(), start) < 300*(currentblock%4)) and (button.value() == 0):
-        linefollowerbasic(LINE_FOLLOWER_SPEED)
+        linefollowerbasic(LINE_FOLLOWER_SPEED)  # Blindly go forwards proportional to which block to avoid depot lines triggering cornering
     
     
     return newdestination   # Return the value read from the QR code reader (default to A if no code found)
@@ -268,6 +288,3 @@ def endfunction():
         pass
     motor3.off()
     motor4.off()
-    
-
-
